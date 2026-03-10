@@ -15,8 +15,7 @@ func TestCafeWhenOk(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/cafe?city=moscow", nil)
 	w := httptest.NewRecorder()
 
-	
-	cafe(w, req)
+	mainHandle(w, req) // вызываем mainHandle
 
 	require.Equal(t, http.StatusOK, w.Code)
 	body := strings.TrimSpace(w.Body.String())
@@ -25,6 +24,7 @@ func TestCafeWhenOk(t *testing.T) {
 	cafes := strings.Split(body, ",")
 	assert.GreaterOrEqual(t, len(cafes), 1)
 }
+
 
 func TestCafeNegative(t *testing.T) {
 	tests := []struct {
@@ -42,7 +42,7 @@ func TestCafeNegative(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, tt.url, nil)
 			w := httptest.NewRecorder()
-			cafe(w, req)
+			mainHandle(w, req)
 
 			require.Equal(t, tt.wantStatus, w.Code)
 			body := strings.TrimSpace(w.Body.String())
@@ -54,7 +54,7 @@ func TestCafeNegative(t *testing.T) {
 
 func TestCafeCount(t *testing.T) {
 	city := "moscow"
-	total := len(cafeList[city]) // полное количество кафе в городе
+	total := len(cafeList[city])
 
 	tests := []struct {
 		name  string
@@ -72,7 +72,7 @@ func TestCafeCount(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, "/cafe?city="+city+"&count="+tt.count, nil)
 			w := httptest.NewRecorder()
 
-			cafe(w, req)
+			mainHandle(w, req)
 
 			require.Equal(t, http.StatusOK, w.Code)
 
@@ -108,7 +108,7 @@ func TestCafeSearch(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, "/cafe?city="+city+"&search="+tt.search, nil)
 			w := httptest.NewRecorder()
 
-			cafe(w, req)
+			mainHandle(w, req)
 
 			require.Equal(t, http.StatusOK, w.Code)
 
